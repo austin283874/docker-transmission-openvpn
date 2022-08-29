@@ -546,6 +546,7 @@ to your request will be treated as "non-local" traffic and therefore be routed o
 <pre><code>$ docker run -d \
       --link &lt;transmission-container&gt;:transmission \
       -p 8080:8080 \
+      --name transmission-openvpn-proxy \
       haugene/transmission-openvpn-proxy
 </code></pre>
 <h2 id="access_the_rpc">Access the RPC<a class="headerlink" href="#access_the_rpc" title="Permanent link">&para;</a></h2>
