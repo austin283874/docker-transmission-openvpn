@@ -325,6 +325,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#ovpn" class="md-nav__link">
+    OVPN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#mullvad_ovpn" class="md-nav__link">
     MULLVAD &amp; OVPN
   </a>
@@ -474,6 +481,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#ovpn" class="md-nav__link">
+    OVPN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#mullvad_ovpn" class="md-nav__link">
     MULLVAD &amp; OVPN
   </a>
@@ -548,6 +562,46 @@ I'm <a href="https://github.com/haugene/docker-transmission-openvpn/issues/1558"
 <li>use https://api.nordvpn.com/server/stats to collect cpu's load</li>
 <li>select the more available server.</li>
 </ul>
+<h3 id="ovpn">OVPN<a class="headerlink" href="#ovpn" title="Permanent link">&para;</a></h3>
+<p>The selection script parses the file names of the available on the official contrib repo (https://github.com/haugene/vpn-configs-contrib/tree/main/openvpn/ovpn).</p>
+<p>OVPN utilizes ENV variables:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Function</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OVPN_PROTOCOL</code></td>
+<td>Specifies either TCP or UDP selection</td>
+<td><code>OVPN_PROTOCOL=udp</code></td>
+</tr>
+<tr>
+<td><code>OVPN_COUNTRY</code></td>
+<td>Specifies the country to connect to.</td>
+<td><code>OVPN_CITY=us</code></td>
+</tr>
+<tr>
+<td><code>OVPN_CITY</code></td>
+<td>Specifies the city to connect to.</td>
+<td><code>OVPN_CITY=chicago</code></td>
+</tr>
+<tr>
+<td><code>OVPN_CONNECTION</code></td>
+<td>Uses either standard or multihop VPN connections.  Currntly, OVPN only supports UDP.</td>
+<td><code>OVPN_CONNECTION=multihop</code></td>
+</tr>
+</tbody>
+</table>
+<p>As of August 29, 2022, the following options are available:
+| Type          | Options                                                                                                                                                            | Example                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| <code>multihop</code>  | toronto (ca), zurich (ch), chicago (us), new-york (us), any-city (se)         | <code>OVPN_COUNTRY=ca   OVPN_CITY=toronto</code>          |
+| <code>standard</code> | vienna (at), sydney (au), toronto (ca) , zurich (ch), erfurt (de), frankfurt (de), offenbach (de), copenhagen (dk), madrid (es), helsinki (fl), paris (fr), london (gb), milan (it), tokyo (jp), oslo (no), warsaw (pl), bucharest (ro), gothenburg (se), malmo (se), stockholm (se), sundsvall (se), singapore (sg), kyiv (ua), atlanta (us), los-angeles (us), miami (us), new-york (us), any-city (de), any-city (se), any-city (us) | `OVPN_COUNTRY=us   OVPN_CITY=new-york |</p>
+<p>Review https://github.com/haugene/vpn-configs-contrib/tree/main/openvpn/ovpn for updates to country and city options.  </p>
 <h3 id="mullvad_ovpn">MULLVAD &amp; OVPN<a class="headerlink" href="#mullvad_ovpn" title="Permanent link">&para;</a></h3>
 <p>According to <a href="https://github.com/haugene/docker-transmission-openvpn/issues/1355">(#1355)</a>
 ipv6 needs to be enabled for mullvad vpn
