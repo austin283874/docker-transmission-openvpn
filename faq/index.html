@@ -11,7 +11,7 @@
         <link rel="canonical" href="http://haugene.github.io/docker-transmission-openvpn/faq/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -22,7 +22,7 @@
       <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -54,7 +54,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     
@@ -343,14 +343,14 @@
       
         <li class="md-nav__item">
   <a href="#the_container_runs_but_i_cant_access_the_web_ui" class="md-nav__link">
-    The container runs, but I can't access the web ui
+    The container runs, but I can't access the web UI
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#how_do_i_enable_authentication_in_the_web_ui" class="md-nav__link">
-    How do I enable authentication in the web ui
+    How do I enable authentication in the web UI
   </a>
   
 </li>
@@ -406,8 +406,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#use_a_third_party_tool_to_monitor_and_restart_the_container" class="md-nav__link">
-    Use a third party tool to monitor and restart the container
+  <a href="#use_a_third-party_tool_to_monitor_and_restart_the_container" class="md-nav__link">
+    Use a third-party tool to monitor and restart the container
   </a>
   
 </li>
@@ -525,14 +525,14 @@
       
         <li class="md-nav__item">
   <a href="#the_container_runs_but_i_cant_access_the_web_ui" class="md-nav__link">
-    The container runs, but I can't access the web ui
+    The container runs, but I can't access the web UI
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#how_do_i_enable_authentication_in_the_web_ui" class="md-nav__link">
-    How do I enable authentication in the web ui
+    How do I enable authentication in the web UI
   </a>
   
 </li>
@@ -588,8 +588,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#use_a_third_party_tool_to_monitor_and_restart_the_container" class="md-nav__link">
-    Use a third party tool to monitor and restart the container
+  <a href="#use_a_third-party_tool_to_monitor_and_restart_the_container" class="md-nav__link">
+    Use a third-party tool to monitor and restart the container
   </a>
   
 </li>
@@ -636,8 +636,8 @@
   <h1>Frequently asked questions</h1>
 
 <ul>
-<li><a href="#the_container_runs_but_i_cant_access_the_web_ui">The container runs, but I can't access the web ui</a></li>
-<li><a href="#how_do_i_enable_authentication_in_the_web_ui">How do I enable authentication in the web ui</a></li>
+<li><a href="#the_container_runs_but_i_cant_access_the_web_UI">The container runs, but I can't access the web ui</a></li>
+<li><a href="#how_do_i_enable_authentication_in_the_web_UI">How do I enable authentication in the web ui</a></li>
 <li><a href="#how_do_i_verify_that_my_traffic_is_using_vpn">How do I verify that my traffic is using VPN</a></li>
 <li><a href="#rtnetlink_answers_file_exists">RTNETLINK answers: File exists</a></li>
 <li><a href="#rtnetlink_answers_invalid_argument">RTNETLINK answers: Invalid argument</a></li>
@@ -649,12 +649,12 @@
 <li><a href="#send_username_password_via_file">Send Username Password via file</a></li>
 <li><a href="#auth_received_control_message_auth_failed">AUTH: Received control message: AUTH_FAILED</a></li>
 </ul>
-<h2 id="the_container_runs_but_i_cant_access_the_web_ui">The container runs, but I can't access the web ui<a class="headerlink" href="#the_container_runs_but_i_cant_access_the_web_ui" title="Permanent link">&para;</a></h2>
+<h2 id="the_container_runs_but_i_cant_access_the_web_ui">The container runs, but I can't access the web UI<a class="headerlink" href="#the_container_runs_but_i_cant_access_the_web_ui" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/haugene/docker-transmission-openvpn/issues/1558">TODO</a>: Short explanation and link to <a href="../vpn-networking/">networking</a></p>
-<h2 id="how_do_i_enable_authentication_in_the_web_ui">How do I enable authentication in the web ui<a class="headerlink" href="#how_do_i_enable_authentication_in_the_web_ui" title="Permanent link">&para;</a></h2>
+<h2 id="how_do_i_enable_authentication_in_the_web_ui">How do I enable authentication in the web UI<a class="headerlink" href="#how_do_i_enable_authentication_in_the_web_ui" title="Permanent link">&para;</a></h2>
 <p>You can do this either by setting the appropriate fields in <code>settings.json</code> which is
-found in TRANSMISSION_HOME which defaults to <code>/data/transmission-home</code> so it will be available
-on your host where you mount the <code>/data</code> volume. Remember that Transmission overwrites the config
+found in TRANSMISSION_HOME which defaults to <code>/config/transmission-home</code> so it will be available
+on your host where you mount the <code>/config</code> volume. Remember that Transmission overwrites the config
 when it shuts down, so do this when the container is not running.</p>
 <p>Or you can set it using the convenience environment variables. They will then override the settings
 on every container startup. The environment variables you have to set are:</p>
@@ -668,6 +668,7 @@ that and have not provided a fix yet. Escaping special characters could be an op
 easiest solution is just to avoid them. Make the password longer instead ;)
 Or write it into <code>settings.json</code> manually as first described.
 Also, look up differences between how <a href="https://support.asg.com/mob/mvw/10_0/mv_ag/using_quotes_with_yaml_special_characters.htm">yaml special characters</a> are escaped vs <a href="https://github.com/haugene/docker-transmission-openvpn/issues/1767">in docker run</a></p>
+<p>Docker secrets are also supported for the rpc credentials. To use a secret, remove both the <code>TRANSMISSION_RPC_USERNAME</code> and <code>TRANSMISSION_RPC_PASSWORD</code> environment variables and add a secret named <code>rpc_creds</code>. The secret file must contain two lines, the first line is the username and the second line is the password. Then just add it as a secret to docker, and it will be picked up automatically. This is why the name of the secret is important.</p>
 <h2 id="how_do_i_verify_that_my_traffic_is_using_vpn">How do I verify that my traffic is using VPN<a class="headerlink" href="#how_do_i_verify_that_my_traffic_is_using_vpn" title="Permanent link">&para;</a></h2>
 <p>There are many ways of doing this, and I welcome you to add to this list if you have any suggestions.</p>
 <p>You can exec into the container and through the shell use <code>curl</code> to ask for your public IP. There are
@@ -677,6 +678,7 @@ multiple endpoints for this but here are a few suggestions:</p>
 <li><code>curl http://ipecho.net/plain</code></li>
 <li><code>curl icanhazip.com</code></li>
 </ul>
+<p>Example command: <code>docker exec &lt;container-name&gt; curl --silent "http://ipinfo.io/ip"</code></p>
 <p>Or you could use a test torrent service to download a torrent file and then you can get the IP from that tracker.</p>
 <ul>
 <li>http://ipmagnet.services.cbcdn.com/</li>
@@ -705,10 +707,10 @@ multiple endpoints for this but here are a few suggestions:</p>
 <p>This is usually a question of permissions. Have you set the <a href="https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities">NET_ADMIN capabilities</a> to the container? What if you use <code>docker run --privileged</code>, do you still get that error?</p>
 <p>This is an error where we haven't got too much information. If the hints above get you nowhere, create an issue.</p>
 <h2 id="error_resolving_host_address">Error resolving host address<a class="headerlink" href="#error_resolving_host_address" title="Permanent link">&para;</a></h2>
-<p>This error can happen multiple places in the scripts. The most common is that it happens with <code>curl</code> trying to download the latest .ovpn
-config bundle for those providers that has an update script, or that OpenVPN throws the error when trying to connect to the VPN server.</p>
+<p>This error can happen at multiple places in the scripts. The most common is that it happens with <code>curl</code> trying to download the latest .ovpn
+config bundle for those providers that have an update script, or that OpenVPN throws the error when trying to connect to the VPN server.</p>
 <p>The curl error looks something like <code>curl: (6) Could not resolve host: ...</code> and OpenVPN says <code>RESOLVE: Cannot resolve host address: ...</code>.
-Either way the problem is that your container does not have a valid DNS setup. We have two recommended ways of addressing this.</p>
+Either way, the problem is that your container does not have a valid DNS setup. We have two recommended ways of addressing this.</p>
 <p>The first solution is to use the <code>dns</code> option offered by Docker. This is available in
 <a href="https://docs.docker.com/engine/reference/run/#network-settings">Docker run</a> as well as
 <a href="https://docs.docker.com/compose/compose-file/#dns">Docker Compose</a>. You can add <code>--dns 8.8.8.8 --dns 8.8.4.4</code> to use Google DNS servers.
@@ -726,22 +728,22 @@ OVERRIDE_DNS_2=8.8.4.4
 <p>This will be read by the startup script and it will override the contents of <code>/etc/resolv.conf</code> accordingly. You can have one
 or more of these servers and they will be sorted alphabetically.</p>
 <p><strong>What is the difference between these solutions?</strong></p>
-<p>A good question as they both seem to override what DNS servers the container should use. However they are not equal.</p>
+<p>A good question as they both seem to override what DNS servers the container should use. However, they are not equal.</p>
 <p>The first solution uses the dns flags from Docker. This will mean that we instruct Docker to use these DNS servers for the container,
 but the resolv.conf file in the container will still point to the Docker DNS service. Docker might have many reasons for this but one of
 them is at least for service discovery. If you're running your container as a part of a larger docker-compose file or custom docker network
 and you want to be able to lookup the other containers based on their service names then you need to use the Docker DNS service.
 By using the <code>--dns</code> flags you should have both control of what DNS servers are used for external requests as well as container DNS lookup.</p>
 <p>The second solution is more direct. It rewrites the resolv.conf file so that it no longer refers to the Docker DNS service.
-The effects of this is that you lose Docker service discovery from the container (other containers in the same network can still resolve it)
-but you have cut out a middleman and potential point of error. I'm not sure why this some times is necessary but it has proven to fix
+The effect of this is that you lose Docker service discovery from the container (other containers in the same network can still resolve it)
+but you have cut out a middleman and potential point of error. I'm not sure why this sometimes is necessary but it has proven to fix
 the issue in some cases.</p>
 <p><strong>A possible third option</strong></p>
 <p>If you're facing the OpenVPN error (not curl) then your provider might have config files with IP addresses instead of DNS.
 That way your container won't need DNS to do a lookup for the server. Note that the trackers will still need DNS, so this will only
 solve the problem for you if it is your local network that in some way is blocking the DNS.</p>
 <h2 id="container_loses_connection_after_some_time">Container loses connection after some time<a class="headerlink" href="#container_loses_connection_after_some_time" title="Permanent link">&para;</a></h2>
-<p>For some users, on some platforms, apparently this is an issue. I have not encountered this myself - but there is no doubt that it's recurring.
+<p>For some users, on some platforms, apparently, this is an issue. I have not encountered this myself - but there is no doubt that it's recurring.
 Why does the container lose connectivity? That we don't know and it could be many different reasons that manifest the same symptoms.
 We do however have some possible solutions.</p>
 <h3 id="set_the_ping-exit_option_for_openvpn_and_restart-flag_in_docker">Set the ping-exit option for OpenVPN and restart-flag in Docker<a class="headerlink" href="#set_the_ping-exit_option_for_openvpn_and_restart-flag_in_docker" title="Permanent link">&para;</a></h3>
@@ -749,18 +751,18 @@ We do however have some possible solutions.</p>
 The problem is that if the container has lost internet connection restarting OpenVPN will not fix anything. What you can do though is to set/override
 this option using <code>OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60</code>. This will tell OpenVPN to exit when it cannot ping the server for 1 minute.</p>
 <p>When OpenVPN exits, the container will exit. And if you've then set <code>restart=always</code> or <code>restart=unless-stopped</code> in your Docker config then Docker will
-restart the container and that could/should restore connectivity. VPN providers sometime push options to their clients after they connect. This is visible
+restart the container and that could/should restore connectivity. VPN providers sometimes push options to their clients after they connect. This is visible
 in the logs if they do. If they push ping-restart that can override your settings. So you could consider adding <code>--pull-filter ignore ping</code> to the options above.</p>
 <p>This approach will probably work, especially if you're seeing logs like these from before:</p>
 <pre><code>Inactivity timeout (--ping-restart), restarting
 SIGUSR1[soft,ping-restart] received, process restarting
 </code></pre>
-<h3 id="use_a_third_party_tool_to_monitor_and_restart_the_container">Use a third party tool to monitor and restart the container<a class="headerlink" href="#use_a_third_party_tool_to_monitor_and_restart_the_container" title="Permanent link">&para;</a></h3>
+<h3 id="use_a_third-party_tool_to_monitor_and_restart_the_container">Use a third-party tool to monitor and restart the container<a class="headerlink" href="#use_a_third-party_tool_to_monitor_and_restart_the_container" title="Permanent link">&para;</a></h3>
 <p>The container has a health check script that is run periodically. It will report the health status to Docker and the container will show as "unhealthy"
 if basic network connectivity is broken. You can write your own script and add it to cron, or you can use a tool like <a href="https://github.com/willfarrell/docker-autoheal">https://github.com/willfarrell/docker-autoheal</a> to look for and restart unhealthy containers.</p>
 <p>This container has the <code>autoheal</code> label by default so it is compatible with the <a href="https://hub.docker.com/r/willfarrell/autoheal/">willfarrell/autoheal image</a></p>
 <h2 id="send_username_password_via_file">Send Username Password via file<a class="headerlink" href="#send_username_password_via_file" title="Permanent link">&para;</a></h2>
-<p>Depending on your setup, you may not want to send your vpn user/pass via environment variables (main reason being, it is accessible via docker inspect). If you prefer, there is a way to configure the container to use a file instead. </p>
+<p>Depending on your setup, you may not want to send your VPN user/pass via environment variables (the main reason being, it is accessible via docker inspect). If you prefer, there is a way to configure the container to use a file instead. </p>
 <p><em>Procedure</em>
 1. create a text file with username and password in it, each on a separate line: eg:
 For this example we will pretend, it is located at: <code>./openvpn-credentials.txt</code></p>
@@ -821,8 +823,8 @@ SIGTERM[soft,auth-failure] received, process exiting
 up your credentials. We have had challenges with special characters. Having "?= as part of your password has tripped up our scripts from time to time.</p>
 <p><strong>NOTE</strong> Some providers have multiple sets of credentials. Some for OpenVPN, others for web login, proxy solutions, etc.
 Make sure that you use the ones intended for OpenVPN. <strong>PIA users:</strong> this has recently changed. It used to be a separate pair, but now
-you should use the same login as you do in the web control panel. Before you were supposed to use a username like x12345, now its the p12345 one. There is also a 99 character limit on password length.</p>
-<p>First check that your credentials are correct. Some providers have separate credentials for OpenVPN so it might not be the same as for their apps.
+you should use the same login as you do in the web control panel. Before you were supposed to use a username like x12345, now it's the p12345 one. There is also a 99 character limit on password length.</p>
+<p>First, check that your credentials are correct. Some providers have separate credentials for OpenVPN so it might not be the same as for their apps.
 Secondly, test a few different servers just to make sure that it's not just a faulty server. If this doesn't resolve it, it's probably the container.</p>
 <p>To verify this you can mount a volume to <code>/config</code> in the container. So for example <code>/temporary/folder:/config</code>. Your credentials will be written to
 <code>/config/openvpn-credentials.txt</code> when the container starts, more on that <a href="../building-blocks/#starting_openvpn">here</a>. So by mounting this folder
@@ -901,10 +903,10 @@ you will be able to check the contents of that text file. The first line should 
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

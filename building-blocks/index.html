@@ -11,7 +11,7 @@
         <link rel="canonical" href="http://haugene.github.io/docker-transmission-openvpn/building-blocks/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -22,7 +22,7 @@
       <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -54,7 +54,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     
@@ -524,7 +524,7 @@ from VPN should cause Transmission to stop.</p>
 <p>The container should provide community best practices on how to configure the kill switch, firewall and tweaks on the
 OpenVPN configs to make it run as fast and secure as possible.</p>
 <h2 id="it_goes_like_this">It goes like this<a class="headerlink" href="#it_goes_like_this" title="Permanent link">&para;</a></h2>
-<p>To understand how it works, this is the most important events
+<p>To understand how it works, these are the most important events
 and who/what starts them.</p>
 <ol>
 <li>You start the container</li>
@@ -533,17 +533,17 @@ and who/what starts them.</p>
 </ol>
 <p>When you start the container it is instructed to run a script
 to start OpenVPN. This is defined in <a href="https://github.com/haugene/docker-transmission-openvpn/blob/master/Dockerfile">the Dockerfile</a>.
-This script is responsible for doing initial setup and prepare what is needed for OpenVPN to run successfully.</p>
+This script is responsible for doing initial setup and preparing what is needed for OpenVPN to run successfully.</p>
 <h2 id="starting_openvpn">Starting OpenVPN<a class="headerlink" href="#starting_openvpn" title="Permanent link">&para;</a></h2>
 <p>The main purpose of the startup script is to figure out which OpenVPN config to use.
 OpenVPN itself can be started with a single argument, and that is the config file.
 We also add a few more to tell it to start Transmission when the VPN tunnel is
 started and to stop Transmission when OpenVPN is stopped. That's it.</p>
-<p>Apart from that the script does some firewall config, vpn interface setup and possibly other
+<p>Apart from that, the script does some firewall config, vpn interface setup and possibly other
 things based on your settings. There are also some reserved script names that a user can mount/add to
 the container to include their own scripts as a part of the setup or teardown of the container.</p>
 <p>Anyways! You have probably seen the docker run and docker-compose configuration examples
-and you've put two and two together: This is where environment variables comes in.
+and you've put two and two together: This is where environment variables come in.
 Setting environment variables is a common way to pass configuration options to containers
 and it is the way we have chosen to do it here.
 So far we've explained the need for <code>OPENVPN_PROVIDER</code> and <code>OPENVPN_CONFIG</code>. We use the
@@ -571,11 +571,11 @@ script which in turn will call the start scripts for
 <a href="https://github.com/haugene/docker-transmission-openvpn/blob/master/privoxy/scripts/start.sh">Privoxy</a>.</p>
 <p>The up script will be called with a number of parameters from OpenVPN, and among them is the IP of the tunnel interface.
 This IP is the one we've been assigned by DHCP from the OpenVPN server we're connecting to.
-We use this value to override Transmissions bind address, so we'll only listen for traffic from peers on the VPN interface.</p>
-<p>The startup script checks to see if one of the <a href="../config-options/#alternative_web_uis">alternative web ui's</a> should be used for Transmission.
+We use this value to override Transmission’s bind address, so we'll only listen for traffic from peers on the VPN interface.</p>
+<p>The startup script checks to see if one of the <a href="../config-options/#alternative_web_uis">alternative web UIs</a> should be used for Transmission.
 It also sets up the user that Transmission should be run as, based on the PUID and PGID passed by the user
 along with selecting preferred logging output and a few other tweaks.</p>
-<p>Before starting Transmission we also need to see if there are any settings that should be overridden.
+<p>Before starting Transmission we also need to see if any settings should be overridden.
 One example of this is binding Transmission to the IP we've gotten from our VPN provider.
 Here we check if we find any environment variables that match a setting that we also see in settings.json.
 This is described in the <a href="../config-options/#transmission_configuration_options">config section</a>.
@@ -589,10 +589,10 @@ the selected properties in settings.json and we're ready to start Transmission i
 to get an open port and set it in Transmission. <strong>Opening a port in your local router does not work</strong>.
 I made that bold because it's a recurring theme. It's not intuitive until it is I guess.
 Since all your traffic is going through the VPN, which is kind of the point, the port you have to open is not on your router.
-Your router's external IP address is the destination of those packets. It is on your VPN providers end that it has to be opened.
-Some providers support this, other don't. We try to write scripts for those that do and that script will be executed
+Your router's external IP address is the destination of those packets. It is on your VPN provider’s end that it has to be opened.
+Some providers support this, others don't. We try to write scripts for those that do and that script will be executed
 after starting Transmission if it exists for your provider.</p>
-<p>At this point Transmission is running and everything is great!
+<p>At this point, Transmission is running and everything is great!
 But you might not be able to access it, and that's the topic of the <a href="../vpn-networking/">networking section</a>.</p>
 
 
@@ -667,10 +667,10 @@ But you might not be able to access it, and that's the topic of the <a href="../
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

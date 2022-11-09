@@ -11,7 +11,7 @@
         <link rel="canonical" href="http://haugene.github.io/docker-transmission-openvpn/config-options/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -22,7 +22,7 @@
       <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -54,7 +54,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     
@@ -410,6 +410,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    Debugging
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -601,6 +608,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    Debugging
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -650,6 +664,23 @@
 </tr>
 </tbody>
 </table>
+<p>Docker secrets are available to define OPENVPN_USER and OPENVPN_PASSWORD.</p>
+<ul>
+<li>remove OPENVPN_USERNAME, OPENVPN_PASSWORD from environment.</li>
+<li>write your credentials in one file: openvpn_creds</li>
+<li>add to your compose yaml:</li>
+</ul>
+<pre><code class="language-yaml">version: '3.8'
+services:
+ transmission:
+    ....
+    secrets:
+        - openvpn_creds
+
+secrets:
+    openvpn_creds:
+        file: ./openvpn_creds
+</code></pre>
 <h3 id="network_configuration_options">Network configuration options<a class="headerlink" href="#network_configuration_options" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -677,7 +708,7 @@
 </tr>
 <tr>
 <td><code>CREATE_TUN_DEVICE</code></td>
-<td>Creates /dev/net/tun device inside the container, mitigates the need mount the device from the host</td>
+<td>Creates /dev/net/tun device inside the container, mitigates the need to mount the device from the host</td>
 <td><code>CREATE_TUN_DEVICE=true</code></td>
 </tr>
 <tr>
@@ -763,7 +794,7 @@
 </tbody>
 </table>
 <h3 id="permission_configuration_options">Permission configuration options<a class="headerlink" href="#permission_configuration_options" title="Permanent link">&para;</a></h3>
-<p>By default the startup script applies a default set of permissions and ownership on the transmission download, watch and incomplete directories. The GLOBAL_APPLY_PERMISSIONS directive can be used to disable this functionality.</p>
+<p>By default, the startup script applies a default set of permissions and ownership on the transmission download, watch and incomplete directories. The GLOBAL_APPLY_PERMISSIONS directive can be used to disable this functionality.</p>
 <table>
 <thead>
 <tr>
@@ -808,8 +839,8 @@ to either <code>combustion</code>, <code>kettu</code>, <code>transmission-web-co
 </tbody>
 </table>
 <h3 id="user_configuration_options">User configuration options<a class="headerlink" href="#user_configuration_options" title="Permanent link">&para;</a></h3>
-<p>By default everything will run as the root user. However, it is possible to change who runs the transmission process.
-You may set the following parameters to customize the user id that runs transmission.</p>
+<p>By default, everything will run as the root user. However, it is possible to change who runs the transmission process.
+You may set the following parameters to customize the user id that runs Transmission.</p>
 <table>
 <thead>
 <tr>
@@ -835,8 +866,10 @@ You may set the following parameters to customize the user id that runs transmis
 <p>In previous versions of this container the settings were not persistent but was generated from environment variables on container startup.
 This had the benefit of being very explicit and reproducable but you had to provide Transmission config as environment variables if you
 wanted them to stay that way between container restarts. This felt cumbersome to many.</p>
-<p>As of version 3.0 this is no longer true. Settings are now persisted in the <code>/data/transmission-home</code> folder in the container and as
-long as you mount <code>/data</code> you should be able to configure Transmission using the UI as you normally would.</p>
+<p>As of version 4.2 this is no longer true. Settings are now persisted in the <code>/config/transmission-home</code> folder in the container and as
+long as you mount <code>/config</code> you should be able to configure Transmission using the UI as you normally would.
+If you are using the container from earlier versions and have not changed the location of transmission-home to /config, you will see a warning message that the default has changed.
+You can manually move the folder to your /config volume directory after stopping the container and adding the /config mount to your container setup (compose/run etc).</p>
 <p>You may still override Transmission options by setting environment variables if that's your thing.
 The variables are named after the transmission config they target but are prefixed with <code>TRANSMISSION_</code>, capitalized, and <code>-</code> is converted to <code>_</code>.</p>
 <p>For example:</p>
@@ -866,21 +899,21 @@ The variables are named after the transmission config they target but are prefix
 </tr>
 </tbody>
 </table>
-<p>A full list of variables can be found in the Transmission documentation <a href="https://github.com/transmission/transmission/wiki/Editing-Configuration-Files">here</a>.</p>
+<p>A full list of variables can be found in the Transmission documentation <a href="https://github.com/transmission/transmission/blob/main/docs/Editing-Configuration-Files.md#options">here</a>.</p>
 <p>All variables overridden by environment variables will be logged during startup.</p>
 <p>PS: <code>TRANSMISSION_BIND_ADDRESS_IPV4</code> will automatically be overridden to the IP assigned to your OpenVPN tunnel interface.
-This ensures that Transmission only listens for torrent traffic on the VPN interface and is part of the fail safe mechanisms.</p>
+This ensures that Transmission only listens for torrent traffic on the VPN interface and is part of the fail-safe mechanisms.</p>
 <h3 id="dropping_default_route_from_iptables_advanced">Dropping default route from iptables (advanced)<a class="headerlink" href="#dropping_default_route_from_iptables_advanced" title="Permanent link">&para;</a></h3>
 <p>Some VPNs do not override the default route, but rather set other routes with a lower metric.
-This might lead to the default route (your untunneled connection) to be used.</p>
+This might lead to the default route (your untunneled connection) being used.</p>
 <p>To drop the default route set the environment variable <code>DROP_DEFAULT_ROUTE</code> to <code>true</code>.</p>
 <p><em>Note</em>: This is not compatible with all VPNs. You can check your iptables routing with the <code>ip r</code> command in a running container.</p>
 <h3 id="changing_logging_locations">Changing logging locations<a class="headerlink" href="#changing_logging_locations" title="Permanent link">&para;</a></h3>
-<p>By default Transmission will log to a file in <code>TRANSMISSION_HOME/transmission.log</code>.</p>
+<p>By default, Transmission will log to a file in <code>TRANSMISSION_HOME/transmission.log</code>.</p>
 <p>To log to stdout instead set the environment variable <code>LOG_TO_STDOUT</code> to <code>true</code>.</p>
-<p><em>Note</em>: By default stdout is what container engines read logs from. Set this to true to have Tranmission logs in commands like <code>docker logs</code> and <code>kubectl logs</code>. OpenVPN currently only logs to stdout.</p>
+<p><em>Note</em>: By default, stdout is what container engines read logs from. Set this to true to have Tranmission logs in commands like <code>docker logs</code> and <code>kubectl logs</code>. OpenVPN currently only logs to stdout.</p>
 <h3 id="custom_scripts">Custom scripts<a class="headerlink" href="#custom_scripts" title="Permanent link">&para;</a></h3>
-<p>If you ever need to run custom code before or after transmission is executed or stopped, you can use the custom scripts feature.
+<p>If you ever need to run custom code before or after Transmission is executed or stopped, you can use the custom scripts feature.
 Custom scripts are located in the /scripts directory which is empty by default.
 To enable this feature, you'll need to mount the /scripts directory.</p>
 <p>Once /scripts is mounted you'll need to write your custom code in the following bash shell scripts:</p>
@@ -909,6 +942,10 @@ To enable this feature, you'll need to mount the /scripts directory.</p>
 <td>This shell script will be executed after transmission start</td>
 </tr>
 <tr>
+<td>/scripts/routes-post-start.sh</td>
+<td>This shell script will be executed after routes are added</td>
+</tr>
+<tr>
 <td>/scripts/transmission-pre-stop.sh</td>
 <td>This shell script will be executed before transmission stop</td>
 </tr>
@@ -919,6 +956,24 @@ To enable this feature, you'll need to mount the /scripts directory.</p>
 </tbody>
 </table>
 <p>Don't forget to include the #!/bin/bash shebang and to make the scripts executable using chmod a+x</p>
+<h3 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">&para;</a></h3>
+<p>By default, commands are not echoed to stdout before being processed. Setting DEBUG to any value other than the string false will trigger command echo (set -x) for all bash scripts.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Function</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEBUG</td>
+<td>Echo all commands to stdout.</td>
+<td>DEBUG=true</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -992,10 +1047,10 @@ To enable this feature, you'll need to mount the /scripts directory.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

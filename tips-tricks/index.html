@@ -11,7 +11,7 @@
         <link rel="canonical" href="http://haugene.github.io/docker-transmission-openvpn/tips-tricks/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -22,7 +22,7 @@
       <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -54,7 +54,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     
@@ -390,6 +390,19 @@
     Let other containers use VPN
   </a>
   
+    <nav class="md-nav" aria-label="Let other containers use VPN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check_if_container_is_using_vpn" class="md-nav__link">
+    Check if container is using VPN
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -501,6 +514,19 @@
     Let other containers use VPN
   </a>
   
+    <nav class="md-nav" aria-label="Let other containers use VPN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check_if_container_is_using_vpn" class="md-nav__link">
+    Check if container is using VPN
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -561,10 +587,71 @@ adding --dns 8.8.8.8 --dns 8.8.4.4 as parameters to the usual run command.</p>
 <h4 id="restart_container_if_connection_is_lost">Restart container if connection is lost<a class="headerlink" href="#restart_container_if_connection_is_lost" title="Permanent link">&para;</a></h4>
 <p>If the VPN connection fails or the container for any other reason loses connectivity, you want it to recover from it. One way of doing this is to set environment variable <code>OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60</code> and use the --restart=always flag when starting the container. This way OpenVPN will exit if ping fails over a period of time which will stop the container and then the Docker deamon will restart it.</p>
 <h4 id="let_other_containers_use_vpn">Let other containers use VPN<a class="headerlink" href="#let_other_containers_use_vpn" title="Permanent link">&para;</a></h4>
-<p><a href="https://github.com/haugene/docker-transmission-openvpn/issues/1558">TODO</a>: Relevant issues...</p>
+<p>To let other containers use VPN you have to add them to the same Service network as your VPN container runs, you can do this by adding <code>network_mode: "service:transmission-openvpn"</code>. Additionally you have to set <code>depends_on</code> to the <code>transmission-openvpn</code> service to let docker-compose know that your new container should start <strong>after</strong> <code>transmission-openvpn</code> is up and running. As final step you can add <code>healthcheck</code> to you service.</p>
+<p>As an example, lets add <a href="https://github.com/linuxserver/docker-jackett">Jackett</a> to the <code>transmission-openvpn</code> network based on example from <a href="../run-container/">Running the container</a>:</p>
+<pre><code class="language-yaml">version: '3.3'
+services:
+    transmission-openvpn:
+        cap_add:
+            - NET_ADMIN
+        volumes:
+            - '/your/storage/path/:/data'
+        environment:
+            - OPENVPN_PROVIDER=PIA
+            - OPENVPN_CONFIG=france
+            - OPENVPN_USERNAME=user
+            - OPENVPN_PASSWORD=pass
+            - LOCAL_NETWORK=192.168.0.0/16
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+        ports:
+            - '9091:9091'
+            - '9117:9117'  # This is Jackett Port – managed by VPN Service Network
+        image: haugene/transmission-openvpn
+    jackett:
+        image: lscr.io/linuxserver/jackett:latest
+        container_name: jackett
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Europe/London
+            - AUTO_UPDATE=true #optional
+            - RUN_OPTS=&lt;run options here&gt; #optional
+        volumes:
+            - &lt;path to data&gt;:/config
+            - &lt;path to blackhole&gt;:/downloads
+        # You have to comment ports, they should be managed in transmission-openvpn section now.
+#       ports:
+#           - 9117:9117
+        restart: unless-stopped
+        network_mode: &quot;service:transmission-openvpn&quot; # Add to the transmission-openvpn Container Network
+        depends_on:
+            - transmission-openvpn # Set dependency on transmission-openvpn Container
+        healthcheck: # Here you will check if transmission is reachable from the Jackett container via localhost
+            test: curl -f http://localhost:9091 || exit 1
+            # Use this test if you protect your transmission with user and password 
+            # comment test above and un-comment line below.
+            #test: curl -f http://${TRANSMISSION_RPC_USERNAME}:${TRANSMISSION_RPC_PASSWORD}@localhost:9091 || exit 1
+            interval: 5m00s
+            timeout: 10s
+            retries: 2
+</code></pre>
+<h5 id="check_if_container_is_using_vpn">Check if container is using VPN<a class="headerlink" href="#check_if_container_is_using_vpn" title="Permanent link">&para;</a></h5>
+<p>After container starts, simply call <code>curl</code> under it to check your IP Address. E.g. for example with Jackett you should see your VPN IP address as output:</p>
+<pre><code class="language-bash">docker exec jackett curl -s https://api.ipify.org
+</code></pre>
+<p>You can also check that Jackett is attached to the VPN network by pinging it from the <code>transmission-openvpn</code> Container <code>localhost</code>:</p>
+<pre><code class="language-bash">docker exec transmission-vpn curl -Is http://localhost:9117
+HTTP/1.1 301 Moved Permanently
+Date: Tue, 17 May 2022 19:58:19 GMT
+Server: Kestrel
+Location: /UI/Dashboard
+</code></pre>
 <h4 id="reach_sleep_or_hybernation_on_your_host_if_no_torrents_are_active">Reach sleep or hybernation on your host if no torrents are active<a class="headerlink" href="#reach_sleep_or_hybernation_on_your_host_if_no_torrents_are_active" title="Permanent link">&para;</a></h4>
-<p>By befault Transmission will always <a href="https://en.wikipedia.org/wiki/Tracker_scrape">scrape</a> trackers, even if all torrents have completed their activities, or they have been paused manually. This will cause Transmission to be always active, therefore never allow your host server to be inactive and go to sleep/hybernation/whatever. If this is something you want, you can add the following variable when creating the container. It will turn off a hidden setting in Tranmsission which will stop the application to scrape trackers for paused torrents. Transmission will become inactive, and your host will reach the desidered state.</p>
-<pre><code>-e &quot;TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED=false&quot;
+<p>By default Transmission will always <a href="https://en.wikipedia.org/wiki/Tracker_scrape">scrape</a> trackers, even if all torrents have completed their activities, or they have been paused manually. This will cause Transmission to be always active, therefore never allow your host server to be inactive and go to sleep/hybernation/whatever. If this is something you want, you can add the following variable when creating the container. It will turn off a hidden setting in Tranmsission which will stop the application to scrape trackers for paused torrents. Transmission will become inactive, and your host will reach the desidered state.</p>
+<pre><code class="language-bash">-e &quot;TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED=false&quot;
 </code></pre>
 <h4 id="running_it_on_a_nas">Running it on a NAS<a class="headerlink" href="#running_it_on_a_nas" title="Permanent link">&para;</a></h4>
 <p>Several popular NAS platforms supports Docker containers. You should be able to set up
@@ -582,7 +669,7 @@ Please see following issue that discusses <a href="https://github.com/haugene/do
 <p>Save the following as <code>/etc/systemd/system/transmission-openvpn.service</code>, and replace the OpenVPN PROVIDER/USERNAME/PASSWORD directives with your settings, and add any other directives that you're using.</p>
 <p>This service is assuming that there is a <code>bittorrent</code> user set up with a home directory at <code>/home/bittorrent/</code>. The data directory will be mounted at <code>/home/bittorrent/data/</code>. This can be changed to whichever user and location you're using.</p>
 <p>OpenVPN is set to exit if there is a connection failure. OpenVPN exiting triggers the container to also exit, then the <code>Restart=always</code> definition in the <code>transmission-openvpn.service</code> file tells systems to restart things again.</p>
-<pre><code>[Unit]
+<pre><code class="language-bash">[Unit]
 Description=haugene/transmission-openvpn docker container
 After=docker.service
 Requires=docker.service
@@ -613,11 +700,11 @@ RestartSec=5
 WantedBy=multi-user.target
 </code></pre>
 <p>Then enable and start the new service with:</p>
-<pre><code>$ sudo systemctl enable /etc/systemd/system/transmission-openvpn.service
+<pre><code class="language-bash">$ sudo systemctl enable /etc/systemd/system/transmission-openvpn.service
 $ sudo systemctl restart transmission-openvpn.service
 </code></pre>
 <p>If it is stopped or killed in any fashion, systemd will restart the container. If you do want to shut it down, then run the following command and it will stay down until you restart it.</p>
-<pre><code>$ sudo systemctl stop transmission-openvpn.service
+<pre><code class="language-bash">$ sudo systemctl stop transmission-openvpn.service
 # Later ...
 $ sudo systemctl start transmission-openvpn.service
 </code></pre>
@@ -697,10 +784,10 @@ $ sudo systemctl start transmission-openvpn.service
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>
